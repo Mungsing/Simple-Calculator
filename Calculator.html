@@ -1,0 +1,233 @@
+<!--- some simple css -->
+<meta name="viewport"  content="width=device-width, initial-scale=1"/>
+<style>
+    body {
+        background: #3c3a3a;
+    }
+	font-family: Arial, Helvetica, sans-serif;
+    * {
+        border-sizing: border-box;
+    }
+   .calculator {
+        margin: auto;
+        position: relative;
+		width:320px;
+        height:520px;
+       background-color:#000000;
+       border-radius: 30px 30px 30px 30px;
+	   cursor: text
+    }
+	.display-result {
+	
+		margin-bottom: 25px;
+	}
+    div.display-result {
+        margin: 20px;
+		margin-bottom:25px;
+        padding: 5px;
+        display: absolute;
+        width: 85%;
+        height:25px;
+        background-color: #f1f1f1;
+        text-align:center;
+        border-radius: 5px;
+     }
+	.btn {
+    background-color:#a6a6a6;
+    padding:15px;
+    margin:12px;
+	width:52px;
+    cursor:pointer;
+	border-radius:50px;
+    font-size: 16px;
+	color: white;
+}
+	.btn11 {
+    background-color:#333333;
+    padding:15px;
+    margin:12px;
+	width:52px;
+    cursor:pointer;
+	border-radius:50px;
+    font-size: 16px;
+	color: white;
+}
+	.btn1 {
+    background-color:#333333;
+	color:white;
+    padding:15px;
+    margin:12px;
+	width: 133px;
+    cursor: pointer;
+	border-radius: 50px;
+    font-size: 16px;
+}	
+	.btn3 {
+    background-color:#ff9501;
+    padding:15px;
+    margin:12px;
+	width:52px;
+    cursor:pointer;
+	border-radius:50px;
+    font-size: 16px;
+	color: white;
+}
+.main-layout {
+	position: absolute:
+	bottom: 5px;
+	display: block;
+}
+
+
+</style>
+  
+
+  <!-- simple html layout -->
+  <body>
+  <br/>
+  
+  <br/>
+       <div class="calculator" id="calculator">
+        
+		<div class="main-layout">
+			<br/>
+			 <div id="display-result" class="display-result">Result Display here</div>
+        <br/><br/>
+        <button class="btn operator" data-operator="" id="clear">AC</button>
+        <button class="btn operator" data-operator="exponentiation">^</button>
+        <button class="btn operator" data-operator="modulus">%</button>
+        <button class="btn3 operator" data-operator="division">/</button>
+        <br/>
+        <button class="btn11 num" data-num="7">7</button>
+        <button class="btn11 num" data-num="8">8</button>
+        <button class="btn11 num" data-num="9">9</button>
+        <button class="btn3 operator" data-operator="multiplication">*</button>
+        <br/>
+        <button class="btn11 num" data-num="4">4</button>
+        <button class="btn11 num" data-num="5">5</button>
+        <button class="btn11 num" data-num="6">6</button>
+        <button class="btn3 operator" data-operator="substraction">-</button>
+        <br/>
+        <button class="btn11 num" data-num="1">1</button>
+        <button class="btn11 num" data-num="2">2</button>
+        <button class="btn11 num" data-num="3">3</button>
+        <button class="btn3 operator" data-operator="addition">+</button>
+        <br/>
+        <button class="btn1 num" data-num="0">0</button>
+        <button class="btn11 num" data-num=".">.</button>
+        <button class="btn3 operator" id="equals" data-result="">=</button>
+		</div>
+        </div>
+    
+    <script>
+		/* self invoking function ( IIFE ) */
+        (function() {
+            "use strict"
+            
+			
+			//declaring an object literal for getting the id and class of the html elements
+            let element = function(element) {
+                if(element.charAt(0) === "#") { // if the return element is an id then 
+                    return document.querySelector(element);   //get only one element.
+                }
+                return document.querySelectorAll(element); //else return as a nodeList
+            };
+            
+			
+			// declaring a variable using a ES6 syntax i.e let
+			
+            let displayResult = element("#display-result"), //screen for displaying result
+                equals = element("#equals"), // the equal to operator
+                nums = element(".num"), // numbers
+                operators = element(".operator"), // operators
+                theNum = "", // current number
+                oldNum= "", // previous number (First number)
+                resultNum, // final number (the result)
+                operator; //single operator
+            
+            // When a number is clicked:- get the number and do the following
+            
+            let setNum = function() {
+                if(resultNum) { // if something is displayed on the screen? clear it
+                    theNum = this.getAttribute("data-num"); // get the attribute data-num and get the value of it
+                    resultNum = ""; // initially result is empty
+                }
+                else { //otherwise add it.
+                    theNum += this.getAttribute("data-num"); //but if the result is not empty then add the new number to it
+                }
+                displayResult.innerHTML = theNum; // display it on the screen
+            };
+            //when operator is clicked
+            let moveNum = function() { 
+               oldNum = theNum; // move the current number to the oldNum variable
+                theNum = ""; // and set theNum (the current value ) to empty string.
+                operators = this.getAttribute("data-operator"); // get the current operators
+                equals.setAttribute("data-result", "");  //get the equals operator and set the result.
+            };
+            //do some calculation.
+            let displayNum = function() {  //displaying it on the screen
+                oldNum = parseFloat(oldNum); //parse the old value to float ( you can do with with parseInt(). but using parseInt() for evaluating floating number will give you an error)
+                theNum = parseFloat(theNum); // do the same for current value.
+                
+                switch(operators) { // using switch operator for performing operations
+                    case "addition":  //add
+                        resultNum = oldNum + theNum;
+                        break;  //break out from the switch case. If you don't break out, the interpreter will try to solve for all the cases.
+                    case "substraction":   //sub.
+                        resultNum = oldNum - theNum; 
+                        break;
+                    case "multiplication": //mult.
+                        resultNum = oldNum * theNum;
+                        break;
+                    case "division": //div.
+                        resultNum = oldNum / theNum;
+                        break;
+                    case "exponentiation": //power of 
+                        resultNum = Math.pow(oldNum, theNum);
+                        break;
+                    case "modulus": // remainder of
+                        resultNum = oldNum % theNum;
+                        break;
+                    default:
+                        resultNum = theNum;
+                }
+                if(!isFinite(resultNum)) { //if the number is Infinite 
+                    if(isNaN(resultNum)) { // if the number is not a number (NaN) 
+                        resultNum = "DO NOT TWO OPERATOR TWICE AT CONCURRENTLY!"; 
+                    }
+                    else { // ELSE
+                        resultNum = "Infinite!";
+                        el("#calculator").classList.add("broken"); //ADD A CLASS
+                        el("#reset").classList.add("show"); //ADD A CLASS
+                    }
+                } 
+                displayResult.innerHTML = resultNum; //DISPLAY THE RESULT
+                equals.setAttribute("data-result", resultNum); 
+                
+                oldNum = 0; // POINT THE oldNum variable to the value to 0
+                theNum = resultNum; //FINAL RESULT.
+            };
+            let clearAll = function() {  // RESET ALL VARIABLES
+                oldNum = ""; 
+                theNum = "";
+                displayResult.innerHTML = "0";
+                equals.setAttribute("data-result", resultNum);
+            };
+            //if any  number is click then call setNum function 
+            for(let i = 0, j = nums.length;  i < j; i++) {
+                nums[i].onclick = setNum;
+            }
+			// if any operator is click then call moveNum function
+            for(let i = 0, j = operators.length; i < j; i++) {
+                operators[i].onclick = moveNum;
+            }
+			//if equals to button is click then call displayNum function
+            equals.onclick = displayNum;
+            //for clear button , call clearAll function
+            element("#clear").onclick = clearAll;
+			//when reset is clicked, reset the window to initial state.
+			// for more window.location object https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+			
+        }()/*self invoking*/); 
+    </script>
+</body
